@@ -15,7 +15,10 @@ const connectDB = async()=>{
             throw new Error('Mongo db url is not defined')
         }
 
-        await mongoose.connect(dbUrl);
+        await mongoose.connect(dbUrl, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+          });
         console.log("Database is successfully connected");
 
 
