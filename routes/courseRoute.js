@@ -32,7 +32,11 @@ const upload = multer({
 });
 
 // Add Course (POST) - Admin Only
-router.post("/add-course",  auth, adminAuth, upload.single("course_thumbnail"),
+router.post(
+  "/add-course",
+  auth,
+  adminAuth,
+  upload.single("course_thumbnail"),
   async (req, res) => {
     const {
       course_name,
@@ -41,7 +45,7 @@ router.post("/add-course",  auth, adminAuth, upload.single("course_thumbnail"),
       course_duration,
       course_curriculum,
       instructor_name,
-      course_thumbnail,
+      course_thumbnail, // Add this line to get it from req.body
     } = req.body;
 
     try {
@@ -49,21 +53,30 @@ router.post("/add-course",  auth, adminAuth, upload.single("course_thumbnail"),
         course_name,
         course_description,
         course_fee,
-        course_thumbnail: req.file ? req.file.path : course_thumbnail, // Use file path if uploaded, otherwise use URL string
+        course_thumbnail: req.file ? req.file.path : course_thumbnail, // Use file path if uploaded, otherwise use URL from req.body
         course_duration,
         course_curriculum,
         instructor_name,
       });
 
       await newCourse.save();
-      res
-        .status(201)
-        .json({ success: true, message: "Course created", course: newCourse });
+
+      // Send response including course ID
+      res.status(201).json({
+        success: true,
+        message: "Course created",
+        course: {
+          id: newCourse._id, // Include course ID in the response
+          ...newCourse.toObject(), // Convert Mongoose document to plain object
+        },
+      });
     } catch (error) {
       res.status(400).json({ success: false, message: error.message });
     }
   }
 );
+
+
 
 // Edit Course (PUT) - Admin Only
 router.put("/update/:id", auth, adminAuth, upload.single("course_thumbnail"),

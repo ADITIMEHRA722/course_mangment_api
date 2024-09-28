@@ -9,8 +9,9 @@ import auth from '../middleware/auth.js';
 const router = express.Router();
 
 // Create/Edit User Profile
+// Create/Edit User Profile
 router.post('/profile', async (req, res) => {
-    const { first_name, last_name, email, mobile_number, age, dob, address, highest_education, current_job, profile_picture ,role } = req.body;
+    const { first_name, last_name, email, mobile_number, age, dob, address, highest_education, current_job, profile_picture, role } = req.body;
 
     try {
         // Check if a user with the same email already exists
@@ -32,11 +33,18 @@ router.post('/profile', async (req, res) => {
         user.token = token;
         await user.save();
 
-        res.status(201).json({ success: true, message: "User profile created", token });
+        // Send response including user ID
+        res.status(201).json({ 
+            success: true, 
+            message: "User profile created", 
+            userId: user._id, // Include user ID in the response
+            token 
+        });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
     }
 });
+
 
 
 

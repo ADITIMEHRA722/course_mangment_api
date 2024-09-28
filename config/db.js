@@ -1,11 +1,8 @@
 import mongoose from "mongoose";
-
 import dotenv from "dotenv";
-
 // first of all we load env variavles 
 
 dotenv.config();
-
 // database connection function
 
 const connectDB = async()=>{
@@ -15,11 +12,8 @@ const connectDB = async()=>{
             throw new Error('Mongo db url is not defined')
         }
 
-        await mongoose.connect(dbUrl, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true, 
-            serverSelectionTimeoutMS: 5000,
-          });
+
+        await mongoose.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
         console.log("Database is successfully connected");
 
 
@@ -28,5 +22,6 @@ const connectDB = async()=>{
         process.exit(1);
     }
 };
+
 
 export default connectDB; 
